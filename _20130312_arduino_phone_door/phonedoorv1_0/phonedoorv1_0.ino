@@ -31,7 +31,7 @@ This sketch send udp frame to defined IP adress when a discrete input is activat
  created 10 Mar 2013 by mael reymond
  */
 
-
+#include <Bounce.h>
 #include <SPI.h>         // needed for Arduino versions later than 0018
 #include <Ethernet.h>
 #include <EthernetUdp.h>         // UDP library from: bjoern@cs.stanford.edu 12/30/2008
@@ -40,10 +40,14 @@ This sketch send udp frame to defined IP adress when a discrete input is activat
 const int buttonPin = 8;     // the number of the pushbutton pin
 const int debug_enable = 1; //debug = 1, not debug =0
 // Variables will change:
-int ledState = HIGH;         // the current state of the output pin
-int buttonState;             // the current reading from the input pin
+int ledState = 1;  //reading = 1;        // the current state of the output pin
+int buttonState=0;             // the current reading from the input pin
 int lastButtonState = LOW;   // the previous reading from the input pin
+int reading = 1; // reading allowed or not
 Timer t,MESSAGE_interval;                     // the timer which perform the keepalive every keep_alive_intervall milliseconds
+
+// Instantiate a Bounce object with a 200 millisecond debounce time
+Bounce bouncer = Bounce( buttonPin,500 ); 
 
 // the following variables are long's because the time, measured in miliseconds,
 // will quickly become a bigger number than can be stored in an int.
@@ -96,72 +100,27 @@ void setup() {
 }
 
 void loop() {
+  bouncer.update ( );
   t.update(); // send keepalive every keep_alive_intervall milliseconds
   int reading = digitalRead(buttonPin);
   // check to see if you just pressed the button 
-  // (i.e. the input went from LOW to HIGH),  and you've waited 
-  // long enough since the last press to ignore any noise:  
-  // If the switch changed, due to noise or pressing:
-  if (reading != lastButtonState) {
-    // reset the debouncing timer
-    lastDebounceTime = millis();
-  } 
-  if ((millis() - lastDebounceTime) > debounceDelay ) { 
-    // whatever the reading is at, it's been there for longer
-    // than the debounce delay, so take it as the actual current state:
-    buttonState = reading;
-  }
-  // save the reading.  Next time through the loop,
-  // it'll be the lastButtonState:
-   lastButtonState = reading; 
-  // if there's data available, read a packet     
-  
-  /// avoid sending multiple MESSAGE at once within the same MESSAGE_sending_interval_time ms
-  
-  // is_MESSAGE_sent  MESSAGE_sending_interval_time       long last_MESSAGE_Time      
-  
-  if (is_MESSAGE_sent == 1) {
-    // reset the debouncing timer
-     last_MESSAGE_Time = millis();
-     if (debug_enable == 1) {
-     Serial.print("                     last MESSAGE time - milli ");
-     debug_value = last_MESSAGE_Time - millis();
-     Serial.println(debug_value);
-     }
-  } 
-  if ( last_MESSAGE_Time - MESSAGE_sending_interval_time > 100 ) { 
-    // resets is_MESSAGE_sent state if MESSAGE sent later than MESSAGE_sending_interval_time
-  is_MESSAGE_sent = 0;
-  last_MESSAGE_Time = 0;
-  }
-  
-  //// end of avoiding multiple MESSAGE
-  
+  // (i.e. the input went from LOW to HIGH), 
+ 
    int j = 1;  
    if (debug_enable == 1) {
-     Serial.print("reading ");
-     Serial.println(reading);
-     Serial.print("buttonState ");
-     Serial.println(buttonState);
-     Serial.print("lastButtonState ");
-     Serial.println(lastButtonState);
-     Serial.print("milli - lastDebounceTime");
-     intervalle = (millis() - lastDebounceTime);
-     Serial.println(intervalle);
-     Serial.print("                     is_MESSAGE_sent ");
-     Serial.println(is_MESSAGE_sent);
-     Serial.print("                             last_MESSAGE_Time ");
-     Serial.println(last_MESSAGE_Time);
-     Serial.print("                                  last MESSAGE time - milli ");
-     debug_value = last_MESSAGE_Time - millis();
-     Serial.println(debug_value);
-   }
+      Serial.print("    bouncer ");
+       Serial.println(bouncer.read());
+       
+       Serial.print("            bouncer rising edge ");
+       Serial.println(bouncer.risingEdge());
+  }
  //LANCER LA SEQUENCE D'ENVOIE RECEPTION
-   if (buttonState == HIGH && is_MESSAGE_sent == 0) {
-     is_MESSAGE_sent = 1;
+//   if (buttonState == HIGH && is_MESSAGE_sent == 0) {
+     if (bouncer.risingEdge() == true) {  
+/*     is_MESSAGE_sent = 1;
      lastDebounceTime =0;
      buttonState = LOW;
-     if (debug_enable == 1) {
+  */  if (debug_enable == 1) {
        Serial.print("sending MESSAGE ");
        for (int l =0; l < 2000; l++)  {         } //little wait before printing out data, visual effect
        Serial.print("ack avant while ack = :");  
@@ -244,5 +203,11 @@ void udpsend(IPAddress ipdestinataire, unsigned int port_destinataire, char mess
     Udp.write(message);
     Udp.endPacket();
 }
+void doAfter()
+{
+  Serial.println("    RESTART reading");
+  reading = 1;
+}
+
 
 
