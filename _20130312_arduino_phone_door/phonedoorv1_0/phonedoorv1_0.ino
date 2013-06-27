@@ -14,8 +14,6 @@
  * 
  *             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
 
-
-
  Everyone is permitted to copy and distribute verbatim or modified
  copies of this license document, and changing it is allowed as long
  as the name is changed.
@@ -79,11 +77,13 @@ unsigned int localPort = 8888;      // local port to listen on
 unsigned int destinationPort = 5650;      // port distant a connecter si necessaire
 unsigned int timeout = 20; 
 unsigned int ack = 0;  //acknowledge
-unsigned int nb_envoi;
+unsigned int nb_envoi = 0;
 
 // buffers for receiving and sending data
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE]; //buffer to hold incoming packet, 
-char  MESSAGE[] = "MESSAGE";  
+char packetRead[UDP_TX_PACKET_MAX_SIZE]; 
+char check[]="OKFROMTAB1";
+char  MESSAGE[] = "send_request_calls";  
 char keep_alive_message[] = "keep_alive_message";
 int tick; 
 EthernetUDP Udp; // An EthernetUDP instance to let us send and receive packets over UDP
@@ -95,11 +95,12 @@ void setup() {
   Ethernet.begin(mac,ip);
   Udp.begin(localPort);
   Serial.begin(9600);
-  int tick = t.every(25000, keepaliv);
+  int tick = t.every(10000, keepaliv);
 
 }
 
 void loop() {
+
   bouncer.update ( );
   t.update(); // send keepalive every keep_alive_intervall milliseconds
   int reading = digitalRead(buttonPin);
@@ -109,11 +110,12 @@ void loop() {
    int j = 1;  
    if (debug_enable == 1) {
       Serial.print("    bouncer ");
-       Serial.println(bouncer.read());
+      Serial.println(bouncer.read());
        
-       Serial.print("            bouncer rising edge ");
-       Serial.println(bouncer.risingEdge());
+      Serial.print("            bouncer rising edge ");
+      Serial.println(bouncer.risingEdge());
   }
+  
  //LANCER LA SEQUENCE D'ENVOIE RECEPTION
 //   if (buttonState == HIGH && is_MESSAGE_sent == 0) {
      if (bouncer.risingEdge() == true) {  
@@ -122,11 +124,11 @@ void loop() {
      buttonState = LOW;
   */  if (debug_enable == 1) {
        Serial.print("sending MESSAGE ");
-       for (int l =0; l < 2000; l++)  {         } //little wait before printing out data, visual effect
+       for (int p =0; p < 5000; p++)  {         } //little wait before printing out data, visual effect
        Serial.print("ack avant while ack = :");  
        Serial.println(ack);  
      } // end debug
-     udpsend(remoteIPadress0,destinationPort,MESSAGE);  // broadcast not always supported by android in sleep mode
+  /*   udpsend(remoteIPadress0,destinationPort,MESSAGE);  // broadcast not always supported by android in sleep mode
      udpsend(remoteIPadress1,destinationPort,MESSAGE);    // the whole LAN is not scanned because keep alive might interfere 
      udpsend(remoteIPadress2,destinationPort,MESSAGE);
      udpsend(remoteIPadress3,destinationPort,MESSAGE);
@@ -138,8 +140,62 @@ void loop() {
      udpsend(remoteIPadress9,destinationPort,MESSAGE);
      udpsend(remoteIPadress10,destinationPort,MESSAGE);    
      udpsend(remoteIPadress40,destinationPort,MESSAGE);    // add my phone 
+   */   
+    udpsend(remoteIPadress1,destinationPort,MESSAGE);
+    udpsend(remoteIPadress1,destinationPort,MESSAGE);
+    udpsend(remoteIPadress1,destinationPort,MESSAGE);
+    udpsend(remoteIPadress1,destinationPort,MESSAGE);
+    udpsend(remoteIPadress1,destinationPort,MESSAGE);
+    udpsend(remoteIPadress1,destinationPort,MESSAGE);
+    udpsend(remoteIPadress1,destinationPort,MESSAGE);
+    udpsend(remoteIPadress1,destinationPort,MESSAGE);
+    udpsend(remoteIPadress1,destinationPort,MESSAGE);
+    udpsend(remoteIPadress1,destinationPort,MESSAGE);
+   while (ack == 0){
+   udpsend(remoteIPadress1,destinationPort,MESSAGE);    // the whole LAN is not scanned because keep alive might interfere 
+    int packetSize = Udp.parsePacket();
+    Udp.read(packetRead,UDP_TX_PACKET_MAX_SIZE);
+    delay(1);
+      if (debug_enable == 1) { 
+             Serial.print("ack :");  // debug
+             Serial.println(ack);  // debug
+             int sLen = packetSize +1; // to be sure of what is the next caracter ?
+               Serial.print("sLen ");
+               Serial.println(sLen);
+             for(int s=0; s<sLen; s++)
+              {
+               Serial.print("theCommand[");
+               Serial.print(s);
+               Serial.print("] is {");
+               Serial.print(packetRead[s]);
+               Serial.print("} which has an ascii value of ");
+               Serial.println(packetRead[s], DEC);
+             }
+//      char c = char(packetBuffer[1]);
+  //    char K = "K";
+    if (packetBuffer == check) {ack =1;};
+    
+    delay(50);
+   
+   Serial.print("fin ENVOI");  
     }
-
+    ack=0;
+     } 
+  /*   nb_envoi++;
+      Serial.println("NNNBBBB   ENVOI");   
+      Serial.println(nb_envoi);  
+      
+    if (nb_envoi == 100) {
+    udpsend(remoteIPadress1,destinationPort,MESSAGE);
+     udpsend(remoteIPadress1,destinationPort,MESSAGE);
+      udpsend(remoteIPadress1,destinationPort,MESSAGE);
+       udpsend(remoteIPadress1,destinationPort,MESSAGE);
+        udpsend(remoteIPadress1,destinationPort,MESSAGE);
+         udpsend(remoteIPadress1,destinationPort,MESSAGE);
+          Serial.print("SPECIAAAAAAAAAAAALLL   ENVOI");
+    nb_envoi = 0;
+    }
+    */
      int packetSize = Udp.parsePacket();
      if(packetSize)
         {
@@ -176,12 +232,12 @@ void loop() {
            }
      }
   }
-
+}
 void keepaliv(){
     if (debug_enable == 1) { 
       Serial.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!   SENDING KEEP ALIVE !!!!!!!!!!!!!!!!!!!!!!!!!!");  // debug
     }
-   for (int z =0; z < 5; z++)  {          
+   for (int z =0; z < 8; z++)  {          
      udpsend(remoteIPadress0,destinationPort,keep_alive_message);  // broadcast not always supported by android in sleep mode
      udpsend(remoteIPadress1,destinationPort,keep_alive_message);    // the whole LAN is not scanned because keep alive might interfere 
      udpsend(remoteIPadress2,destinationPort,keep_alive_message);

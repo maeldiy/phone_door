@@ -5,17 +5,16 @@ package com.maelreymond.phone_door;
 //import net.everythingandroid.smspopup.R;
 //import net.everythingandroid.smspopup.receiver.ClearAllReceiver;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.PowerManager;
-import android.preference.PreferenceManager;
 
 public class ManageWakeLock {
     private static volatile PowerManager.WakeLock mWakeLock = null;
     private static volatile  PowerManager.WakeLock mPartialWakeLock = null;
+ /* Not used ? 
     private static final boolean PREFS_SCREENON_DEFAULT = true;
     private static final boolean PREFS_DIMSCREEN_DEFAULT = false;
     private static final String PREFS_TIMEOUT_DEFAULT = "30";
-
+*/
     public static synchronized void acquireFull(Context mContext) {
         if (mWakeLock != null) {
             if (BuildConfig.DEBUG)
@@ -25,7 +24,7 @@ public class ManageWakeLock {
 
         PowerManager mPm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
 
-        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+  //      SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext); // not used ?
 
         int flags;
 
@@ -83,7 +82,7 @@ public class ManageWakeLock {
 
         PowerManager mPm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
 
-        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+ //       SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext); not used
 
         int flags;
 

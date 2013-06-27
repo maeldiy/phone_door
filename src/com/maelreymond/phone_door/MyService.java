@@ -57,6 +57,7 @@ public class MyService extends Service  {
 	@Override
 	public void onDestroy() {
 		Toast.makeText(getApplicationContext(), "service destroyed",Toast.LENGTH_LONG ).show();
+		
      super.onDestroy();
 	}
 //	}
@@ -73,7 +74,6 @@ public class MyService extends Service  {
 		            try { 
 		            final String SERVERIP = "192.168.0.177"; // the ip of the phone "192.168.0.177"
 		            final int SERVERPORT = 8888;
-		            final int SERVERREC = 5650;
 		            String donnes_recues;
 		         	// mael add for udp purpose 
 		         	
@@ -88,13 +88,14 @@ public class MyService extends Service  {
 		 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
 		 			 while(true){
 		 				 socketin.receive(packet);
-		 				 DatagramSocket socketout = new DatagramSocket();
 		 				 donnes_recues = new String(packet.getData());
-		 				  // keep alive management
+		 				 DatagramSocket socketout = new DatagramSocket();
+		 				   // keep alive management 
  	 				     if (donnes_recues.startsWith("keep_alive_message")) {		 					    
 			 		            SendDataToNetwork( "OK KEEP ALIVE",socketout,serverAddr, SERVERPORT);
 						 }
-		 				 if (donnes_recues.startsWith("MESSAGE")) {
+ 	 				     // management of request for launching app 
+		 				 if (donnes_recues.startsWith("request") | donnes_recues.equals("request") | donnes_recues.contains("request") ) {
 		 					PowerManager pm1 = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		 				    PowerManager.WakeLock wl1 = pm1.newWakeLock(PowerManager.FULL_WAKE_LOCK    //full wake up of CPU
 		 				    		| PowerManager.ON_AFTER_RELEASE   // to allow a long screen on 
@@ -115,8 +116,7 @@ public class MyService extends Service  {
 		 							 mp.release();
 		 						 }
 		 					});
-		 			
-	 
+		 		 
 		 					Intent c = new Intent( Intent.ACTION_MAIN );
 		 					c.addCategory( Intent.CATEGORY_LAUNCHER );         
 		 					c.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
@@ -127,9 +127,7 @@ public class MyService extends Service  {
 		         //   wl1.release();
 		 					c.putExtra( "selectView", "MATRIX_VIEW" );
 		 					startActivity(c);
-	 	                
-		                
-		             // this add to  put an automatic back to homescreen, this because ipcamviewer app has a full wake lock when called
+	             // this add to  put an automatic back to homescreen, this because ipcamviewer app has a full wake lock when called
 			 			// source code for homescreen return 	http://stackoverflow.com/questions/9679677/can-not-launch-home-from-android-4-0?lq=1
 			 			// source code for timer	http://androidrox.wordpress.com/2011/05/12/hello-world/
 

@@ -15,7 +15,7 @@ public class ManageKeyguard {
             myKM = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
         }
     }
-
+ 
     public static synchronized void disableKeyguard(Context context) {
         initialize(context);
 

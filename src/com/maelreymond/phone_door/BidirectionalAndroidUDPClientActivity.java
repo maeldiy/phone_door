@@ -53,7 +53,7 @@ public class BidirectionalAndroidUDPClientActivity extends Activity {
 	TextView seekBarValue;//Textfield displaing the Value of the seekbar
 	ProgressBar progressbar;//progressbar showing the poti rotation
 	
-	Boolean connected=false;//stores the connectionstatus
+	Boolean connected=false;//stores the connection status
 	
  //   NetworkTask networktask;//networktask is the included class to handle the socketconnection
     
@@ -100,7 +100,7 @@ public class BidirectionalAndroidUDPClientActivity extends Activity {
 			}
 			
 		}
-		Toast.makeText(BidirectionalAndroidUDPClientActivity.this, "CHECK IF the service is running irhgi^rzîhgni^zrhengi^znrîhngir^nhgrngoirnbgoiznboinhir^ngîrnogr", Toast.LENGTH_LONG);
+		Toast.makeText(BidirectionalAndroidUDPClientActivity.this, "CHECK IF the service is running irhgi^rzîhgni^zrhengi^znrîhngir^nhgrngoirnbgoiznboinhir^ngîrnogr", Toast.LENGTH_LONG).show();
 		return false;
 	}
 
@@ -112,7 +112,7 @@ public class BidirectionalAndroidUDPClientActivity extends Activity {
 //			Toast.makeText(ServiceDemoActivity.this, "CHECK IF the service is running irhgi^rzîhgni^zrhengi^znrîhngir^nhgrngoirnbgoiznboinhir^ngîrnogr", Toast.LENGTH_LONG);
 			return true;
 		}
-		Toast.makeText(BidirectionalAndroidUDPClientActivity.this, "CLULU", Toast.LENGTH_LONG);
+		Toast.makeText(BidirectionalAndroidUDPClientActivity.this, "CLULU", Toast.LENGTH_LONG).show();
 		return false;
 		
 	}
