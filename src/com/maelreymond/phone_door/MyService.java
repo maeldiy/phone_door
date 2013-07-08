@@ -30,6 +30,7 @@ public class MyService extends Service  {
 	Intent intent;
 	int counter = 0;
 	public Context context;
+	boolean allow_request = true;
 //	protected PowerManager.WakeLock mWakeLock;
 //	protected PowerManager.WakeLock mPartialWakeLock;
 
@@ -83,19 +84,31 @@ public class MyService extends Service  {
 		 			/* Create new UDP-Socket */
 		 			DatagramSocket socketin = null;
 		 			socketin = new DatagramSocket(5650);
-		 			socketin.setBroadcast(false);
+		 			socketin.setBroadcast(false); // because anyway android doesn't allow broadcast in sleep mode
 		 			byte[] buf = new byte[18];	    			
 		 			DatagramPacket packet = new DatagramPacket(buf, buf.length);
 		 			 while(true){
 		 				 socketin.receive(packet);
 		 				 donnes_recues = new String(packet.getData());
-		 				 DatagramSocket socketout = new DatagramSocket();
+		 				 
 		 				   // keep alive management 
- 	 				     if (donnes_recues.startsWith("keep_alive_message")) {		 					    
+ 	 				     if (donnes_recues.startsWith("keep_alive_message")) {	
+ 	 				    	    DatagramSocket socketout = new DatagramSocket();
 			 		            SendDataToNetwork( "OK KEEP ALIVE",socketout,serverAddr, SERVERPORT);
 						 }
  	 				     // management of request for launching app 
-		 				 if (donnes_recues.startsWith("request") | donnes_recues.equals("request") | donnes_recues.contains("request") ) {
+		 				 if ((donnes_recues.startsWith("request") | donnes_recues.equals("request") | donnes_recues.contains("request")) && allow_request == true ) {
+		 					allow_request = false;    //disable reading
+		 					new Timer().schedule((new TimerTask() {   // for 2 minutes
+		 			            
+		 			            @Override
+		 			            public void run() {
+		 			                // TODO Auto-generated method stub
+		 			            	allow_request = true;
+		 			            }
+		 			        }), 120000); 	    
+		 					 
+		 					 
 		 					PowerManager pm1 = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		 				    PowerManager.WakeLock wl1 = pm1.newWakeLock(PowerManager.FULL_WAKE_LOCK    //full wake up of CPU
 		 				    		| PowerManager.ON_AFTER_RELEASE   // to allow a long screen on 
@@ -105,7 +118,7 @@ public class MyService extends Service  {
 		 				    KeyguardLock mKeyguardLock;
 		 						                  mKeyguardLock = kg.newKeyguardLock( "My Tag" ); 
 		 						                  mKeyguardLock.disableKeyguard(); 
-     
+		 					DatagramSocket socketout = new DatagramSocket();	                  	
 		 		            SendDataToNetwork( "OKFROMTAB1",socketout,serverAddr, SERVERPORT);
 		 	//				 Toast.makeText(getApplicationContext(), "ack sent !!!!!", Toast.LENGTH_LONG).show();
 		 					MediaPlayer mp = MediaPlayer.create(getBaseContext(),R.raw.ultra);

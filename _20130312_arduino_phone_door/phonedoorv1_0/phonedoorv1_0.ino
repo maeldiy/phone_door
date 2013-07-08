@@ -82,7 +82,7 @@ unsigned int nb_envoi = 0;
 // buffers for receiving and sending data
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE]; //buffer to hold incoming packet, 
 char packetRead[UDP_TX_PACKET_MAX_SIZE]; 
-char check[]="OKFROMTAB1";
+char check[]="OKFROMTAB";
 char  MESSAGE[] = "send_request_calls";  
 char keep_alive_message[] = "keep_alive_message";
 int tick; 
@@ -141,6 +141,7 @@ void loop() {
      udpsend(remoteIPadress10,destinationPort,MESSAGE);    
      udpsend(remoteIPadress40,destinationPort,MESSAGE);    // add my phone 
    */   
+  /*  udpsend(remoteIPadress1,destinationPort,MESSAGE);
     udpsend(remoteIPadress1,destinationPort,MESSAGE);
     udpsend(remoteIPadress1,destinationPort,MESSAGE);
     udpsend(remoteIPadress1,destinationPort,MESSAGE);
@@ -150,12 +151,13 @@ void loop() {
     udpsend(remoteIPadress1,destinationPort,MESSAGE);
     udpsend(remoteIPadress1,destinationPort,MESSAGE);
     udpsend(remoteIPadress1,destinationPort,MESSAGE);
-    udpsend(remoteIPadress1,destinationPort,MESSAGE);
+    
+ */  ack=0;
    while (ack == 0){
    udpsend(remoteIPadress1,destinationPort,MESSAGE);    // the whole LAN is not scanned because keep alive might interfere 
     int packetSize = Udp.parsePacket();
     Udp.read(packetRead,UDP_TX_PACKET_MAX_SIZE);
-    delay(1);
+    delay(10);
       if (debug_enable == 1) { 
              Serial.print("ack :");  // debug
              Serial.println(ack);  // debug
@@ -173,29 +175,18 @@ void loop() {
              }
 //      char c = char(packetBuffer[1]);
   //    char K = "K";
-    if (packetBuffer == check) {ack =1;};
     
+//    char  *return1 = strstr (packetRead, check);  //string coparison with data received
+    if (packetRead[1] == check[1] && packetRead[3] == check[3]) {ack =1;;   // if data received contains "okfromtab", it is then != NULL
+               Serial.print("ack new value");
+             Serial.println(ack);
     delay(50);
-   
+    }
    Serial.print("fin ENVOI");  
     }
-    ack=0;
+    
      } 
-  /*   nb_envoi++;
-      Serial.println("NNNBBBB   ENVOI");   
-      Serial.println(nb_envoi);  
-      
-    if (nb_envoi == 100) {
-    udpsend(remoteIPadress1,destinationPort,MESSAGE);
-     udpsend(remoteIPadress1,destinationPort,MESSAGE);
-      udpsend(remoteIPadress1,destinationPort,MESSAGE);
-       udpsend(remoteIPadress1,destinationPort,MESSAGE);
-        udpsend(remoteIPadress1,destinationPort,MESSAGE);
-         udpsend(remoteIPadress1,destinationPort,MESSAGE);
-          Serial.print("SPECIAAAAAAAAAAAALLL   ENVOI");
-    nb_envoi = 0;
-    }
-    */
+
      int packetSize = Udp.parsePacket();
      if(packetSize)
         {
