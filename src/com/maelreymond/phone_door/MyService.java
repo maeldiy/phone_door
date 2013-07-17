@@ -99,6 +99,8 @@ public class MyService extends Service  {
  	 				     // management of request for launching app 
 		 				 if ((donnes_recues.startsWith("request") | donnes_recues.equals("request") | donnes_recues.contains("request")) && allow_request == true ) {
 		 					allow_request = false;    //disable reading
+		 		// TODO : throwing an intent or calling something to set the timer below
+		 					
 		 					new Timer().schedule((new TimerTask() {   // for 2 minutes
 		 			            
 		 			            @Override
@@ -187,6 +189,7 @@ public class MyService extends Service  {
 		 			chaussette.send(packetcmd);
 		       } catch (Exception e) {
 		  			Log.e("send to net excepetion ", "plantage", e);
+		  			Toast.makeText(getApplicationContext(), "plantage dans senddatanetwork" + e,Toast.LENGTH_LONG ).show();
 		       }
 		   }
 	}
