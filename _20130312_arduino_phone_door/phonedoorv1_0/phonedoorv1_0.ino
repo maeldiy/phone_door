@@ -151,8 +151,9 @@ void loop() {
      udpsend(remoteIPadress10,destinationPort,MESSAGE);    
      udpsend(remoteIPadress40,destinationPort,MESSAGE);    // add my phone 
     int packetSize = Udp.parsePacket();
-    Udp.read(packetRead,UDP_TX_PACKET_MAX_SIZE);
-    delay(10);
+         if(packetSize){
+        Udp.read(packetRead,UDP_TX_PACKET_MAX_SIZE);
+    //delay(10);
          if (debug_enable == 1) { 
              Serial.print("ack apres check:");  // debug
              Serial.println(ack);  // debug
@@ -172,15 +173,16 @@ void loop() {
   //    char K = "K";
        }
 //    char  *return1 = strstr (packetRead, check);  //string coparison with data received
-    if (packetRead[1] == check[1] && packetRead[3] == check[3]) 
-        {ack =1;;   // if data received contains "okfromtab", it is then != NULL
+    if (packetRead[1] == check[1] && packetRead[3] == check[3]) {
+         ack =1;;   // if data received contains "okfromtab", it is then != NULL
          Serial.print("ack new value");
          Serial.println(ack);
          delay(50);
     }
-   Serial.print("fin ENVOI");   
-     } 
+   Serial.print("fin ENVOI");  
 
+     } 
+   }
      int packetSize = Udp.parsePacket();
      if(packetSize)
         {
@@ -215,14 +217,17 @@ void loop() {
              for (int k =0; k < 5000; k++) //this produce a little pause to provide time to acknoledge on serial debug screen
             {          }
            }
+        
      }
   }
+  
+     memset(packetBuffer, 0, UDP_TX_PACKET_MAX_SIZE); // clear the ethernet buffer 
 }
 void keepaliv(){
     if (debug_enable == 1) { 
       Serial.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!   SENDING KEEP ALIVE !!!!!!!!!!!!!!!!!!!!!!!!!!");  // debug
     }
-   for (int z =0; z < 8; z++)  {          
+   for (int z =0; z < 3; z++)  {          
      udpsend(remoteIPadress0,destinationPort,keep_alive_message);  // broadcast not always supported by android in sleep mode
      udpsend(remoteIPadress1,destinationPort,keep_alive_message);    // the whole LAN is not scanned because keep alive might interfere 
      udpsend(remoteIPadress2,destinationPort,keep_alive_message);

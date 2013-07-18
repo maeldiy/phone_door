@@ -90,16 +90,10 @@ public class MyService extends Service  {
 		 			 while(true){
 		 				 socketin.receive(packet);
 		 				 donnes_recues = new String(packet.getData());
-		 				 
-		 				   // keep alive management 
- 	 				     if (donnes_recues.startsWith("keep_alive_message")) {	
- 	 				    	    DatagramSocket socketout = new DatagramSocket();
-			 		            SendDataToNetwork( "OK KEEP ALIVE",socketout,serverAddr, SERVERPORT);
-						 }
- 	 				     // management of request for launching app 
+		     // management of request for launching app 
 		 				 if ((donnes_recues.startsWith("request") | donnes_recues.equals("request") | donnes_recues.contains("request")) && allow_request == true ) {
 		 					allow_request = false;    //disable reading
-		 		// TODO : throwing an intent or calling something to set the timer below
+		 		// TODO : throwing an intent or calling something to set the timer below to clean up the code
 		 					
 		 					new Timer().schedule((new TimerTask() {   // for 2 minutes
 		 			            
@@ -158,7 +152,13 @@ public class MyService extends Service  {
 			 			            }
 			 			        }), 60000); 	                
 		            wl1.release();    	          		
-		 				 } 				 
+		 				 } 		
+		 				 
+		 			  // keep alive management 
+ 	 				if (donnes_recues.contains("keep_alive_message")) {	
+ 	 				    	    DatagramSocket socketout = new DatagramSocket();
+			 		            SendDataToNetwork( "OK KEEP ALIVE",socketout,serverAddr, SERVERPORT);
+						 }
 		 		}
 			} catch (Exception e) {
 				
