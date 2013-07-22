@@ -68,7 +68,7 @@ public class MyService extends Service  {
 
 	    //	    UDPpacket.run();
 		
-		Thread t = new Thread(new Runnable() {
+		Thread t = new Thread(new Runnable() { //one thread to handle all
 			
 				public void run() 
 		         { 
