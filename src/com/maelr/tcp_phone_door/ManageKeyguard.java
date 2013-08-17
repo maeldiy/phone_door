@@ -1,10 +1,11 @@
-package com.maelreymond.phone_door;
+package com.maelr.tcp_phone_door;
 
 
 import android.app.KeyguardManager;
 import android.app.KeyguardManager.KeyguardLock;
 import android.app.KeyguardManager.OnKeyguardExitResult;
 import android.content.Context;
+
 
 public class ManageKeyguard {
     private static KeyguardManager myKM = null;

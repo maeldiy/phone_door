@@ -23,10 +23,10 @@
 
   0. You just DO WHAT THE FUCK YOU WANT TO.
 
-Phonedoorv1_0.pde:
+Phonedoor_TCP_v1_0.pde:
 This sketch send udp frame to defined IP adress when a discrete input is activated
 
- created 10 Mar 2013 by mael reymond
+ created 22 july 2013 by mael reymond
  */
 
 #include <Bounce.h>
@@ -56,8 +56,10 @@ long keep_alive_intervall = 3000, MESSAGE_sending_interval_time = 3000,last_MESS
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
+/*byte mac[] = {  
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };*/
 byte mac[] = {  
-  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+  0x90, 0xA2, 0xDA, 0x00, 0xF0, 0x6F };
 IPAddress ip(192, 168, 0, 177);
 
 IPAddress remoteIPadress0(192, 168, 0, 10);
@@ -73,34 +75,86 @@ IPAddress remoteIPadress9(192, 168, 0, 19);
 IPAddress remoteIPadress10(192, 168, 0, 20); 
 IPAddress remoteIPadress40(192, 168, 0, 50);  
 
+IPAddress IPgateDNS(192, 168, 0, 199);
+IPAddress monBroadcast(10, 255, 255, 255);
+IPAddress monMask(255, 0, 0 ,0);
+
+
 unsigned int localPort = 8888;      // local port to listen on
 unsigned int destinationPort = 5650;      // port distant a connecter si necessaire
 unsigned int timeout = 20; 
 unsigned int ack = 0;  //acknowledge
 unsigned int nb_envoi = 0;
 
+
+
 // buffers for receiving and sending data
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE]; //buffer to hold incoming packet, 
 char packetRead[UDP_TX_PACKET_MAX_SIZE]; 
 char check[]="OKFROMTAB";
 char  MESSAGE[] = "send_request_calls";  
-char keep_alive_message[] = "keep_alive_message";
+String  REQUEST_PORTAIL = "send_request_calls";
+String  keep_alive_message = "keep_alive_message";
+//char keep_alive_message[] = "keep_alive_message";
 int tick; 
-EthernetUDP Udp; // An EthernetUDP instance to let us send and receive packets over UDP
+
 long debug_value;
      
+//ethernet server
+EthernetServer server(localPort);
+
 void setup() {
   // start the Ethernet and UDP:
   pinMode(buttonPin, INPUT);
   digitalWrite(buttonPin, HIGH);  //enable internal pull up resistor
-  Ethernet.begin(mac,ip);
-  Udp.begin(localPort);
+//  Ethernet.begin(mac,ip);
+  Ethernet.begin(mac,remoteIPadress0); //Ethernet.begin(maMac, monIP, IPgateDNS, IPgateDNS, monMask);
   Serial.begin(9600);
   int tick = t.every(10000, keepaliv);
 }
 
 void loop() {
-
+               Serial.println("void loop  ");
+  // listen for incoming clients
+    EthernetClient client = server.available();
+  if (client) {
+    String commandStr ="";//Commandstring where incoming commands are stored
+  
+      while (client.connected()) {//if a client is connected
+         bouncer.update ( );
+         t.update(); // send keepalive every keep_alive_intervall milliseconds
+         int reading = digitalRead(buttonPin);
+  // check to see if you just pressed the button 
+  // (i.e. the input went from LOW to HIGH), 
+ 
+         if (debug_enable == 1) {
+            Serial.print("    bouncer ");
+            Serial.println(bouncer.read());
+            Serial.print("            bouncer rising edge ");
+            Serial.println(bouncer.risingEdge());
+            Serial.print("            bouncer fallingEdge ");
+            Serial.println(bouncer.fallingEdge());
+            Serial.print("      button pin read ");
+            Serial.println(reading);
+         }
+ //LANCER LA SEQUENCE D'ENVOIE RECEPTION
+         if (bouncer.fallingEdge() == true) {  
+           if (debug_enable == 1) {
+             Serial.println("sending MESSAGE ");
+             for (int p =0; p < 5000; p++)  {         } //little wait before printing out data, visual effect
+         } // end debug
+   
+         server.println(REQUEST_PORTAIL);//broadcast the request
+   
+    // give the client time to receive the data
+    delay(1);
+    // close the connection:
+    client.stop();
+   }
+      }
+  }
+}
+  /*
   bouncer.update ( );
   t.update(); // send keepalive every keep_alive_intervall milliseconds
   int reading = digitalRead(buttonPin);
@@ -125,7 +179,8 @@ void loop() {
 /*     is_MESSAGE_sent = 1;
      lastDebounceTime =0;
      buttonState = LOW;
-  */  if (debug_enable == 1) {
+  */
+ /*      if (debug_enable == 1) {
        Serial.print("sending MESSAGE ");
        for (int p =0; p < 5000; p++)  {         } //little wait before printing out data, visual effect
        Serial.print("ack avant while ack = :");  
@@ -150,6 +205,8 @@ void loop() {
      udpsend(remoteIPadress9,destinationPort,MESSAGE);
      udpsend(remoteIPadress10,destinationPort,MESSAGE);    
      udpsend(remoteIPadress40,destinationPort,MESSAGE);    // add my phone 
+    
+    ejgoiejgo
     int packetSize = Udp.parsePacket();
          if(packetSize){
         Udp.read(packetRead,UDP_TX_PACKET_MAX_SIZE);
@@ -222,33 +279,17 @@ void loop() {
   }
   
      memset(packetBuffer, 0, UDP_TX_PACKET_MAX_SIZE); // clear the ethernet buffer 
-}
+     
+   */  
+
 void keepaliv(){
     if (debug_enable == 1) { 
       Serial.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!   SENDING KEEP ALIVE !!!!!!!!!!!!!!!!!!!!!!!!!!");  // debug
     }
-   for (int z =0; z < 3; z++)  {          
-     udpsend(remoteIPadress0,destinationPort,keep_alive_message);  // broadcast not always supported by android in sleep mode
-     udpsend(remoteIPadress1,destinationPort,keep_alive_message);    // the whole LAN is not scanned because keep alive might interfere 
-     udpsend(remoteIPadress2,destinationPort,keep_alive_message);
-     udpsend(remoteIPadress3,destinationPort,keep_alive_message);
-     udpsend(remoteIPadress4,destinationPort,keep_alive_message);
-     udpsend(remoteIPadress5,destinationPort,keep_alive_message);
-     udpsend(remoteIPadress6,destinationPort,keep_alive_message);    
-     udpsend(remoteIPadress7,destinationPort,keep_alive_message);
-     udpsend(remoteIPadress8,destinationPort,keep_alive_message);
-     udpsend(remoteIPadress9,destinationPort,keep_alive_message);
-     udpsend(remoteIPadress10,destinationPort,keep_alive_message);    
-     udpsend(remoteIPadress40,destinationPort,keep_alive_message);
+          server.println(keep_alive_message);//broadcast the request
      }  
-   }
    
-void udpsend(IPAddress ipdestinataire, unsigned int port_destinataire, char message[]) {
-  
-    Udp.beginPacket(ipdestinataire, port_destinataire);
-    Udp.write(message);
-    Udp.endPacket();
-}
+
 void doAfter()
 {
   Serial.println("    RESTART reading");

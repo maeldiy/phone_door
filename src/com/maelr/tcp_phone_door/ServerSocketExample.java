@@ -1,4 +1,6 @@
-package com.maelreymond.phone_door;
+
+package com.maelr.tcp_phone_door;
+
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

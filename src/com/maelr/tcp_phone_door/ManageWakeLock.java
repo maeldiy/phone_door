@@ -1,4 +1,4 @@
-package com.maelreymond.phone_door;
+package com.maelr.tcp_phone_door;
 
 
 //import net.everythingandroid.smspopup.BuildConfig;
@@ -6,6 +6,7 @@ package com.maelreymond.phone_door;
 //import net.everythingandroid.smspopup.receiver.ClearAllReceiver;
 import android.content.Context;
 import android.os.PowerManager;
+
 
 public class ManageWakeLock {
     private static volatile PowerManager.WakeLock mWakeLock = null;

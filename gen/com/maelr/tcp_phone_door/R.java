@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.maelreymond.phone_door;
+package com.maelr.tcp_phone_door;
 
 public final class R {
     public static final class attr {

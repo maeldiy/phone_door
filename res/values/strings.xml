@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">This is my UDP bidirectional Android - Arduino Client</string>
+    <string name="hello">This is my TCP Android - Arduino Client</string>
     <string name="console">Console:</string>
-    <string name="app_name">UDP Android Arduino Client</string>
+    <string name="app_name">TCP_Phone_Door</string>
     
     <string name="servo_name">my Servo:</string>
     

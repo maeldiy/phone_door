@@ -1,5 +1,5 @@
 /*
- * AndroidUDPClientActivity -> arduino client
+ * AndroidTCPClientActivity -> arduino client
  * 
  * 5.01.2013
  * by Mael reymond
@@ -28,7 +28,7 @@
   0. You just DO WHAT THE FUCK YOU WANT TO.
 
  */
-package com.maelreymond.phone_door;
+package com.maelr.tcp_phone_door;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -43,8 +43,9 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.maelr.tcp_phone_door.R;
 
-public class BidirectionalAndroidUDPClientActivity extends Activity {
+public class AndroidTCPClientActivity extends Activity {
 	
 	TextView textlog;//Log for outputs
 	
@@ -71,12 +72,12 @@ public class BidirectionalAndroidUDPClientActivity extends Activity {
 	    if (CheckIfServiceIsRunning()) {
 			etat_service = "1";
 	
-			Toast.makeText(BidirectionalAndroidUDPClientActivity.this, etat_service + "continuation", Toast.LENGTH_SHORT).show();
+			Toast.makeText(AndroidTCPClientActivity.this, etat_service + "continuation", Toast.LENGTH_SHORT).show();
 		} else {
 			etat_service = "2";
 
 			startService(new Intent(this, MyService.class));
-			Toast.makeText(BidirectionalAndroidUDPClientActivity.this, etat_service + " demarrage", Toast.LENGTH_SHORT).show();
+			Toast.makeText(AndroidTCPClientActivity.this, etat_service + " demarrage", Toast.LENGTH_SHORT).show();
 			}
 	    PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 	    PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK," TAG");
@@ -89,18 +90,18 @@ public class BidirectionalAndroidUDPClientActivity extends Activity {
     //----------------------- THE service check TASK - end ----------------------------
     private boolean isMyServiceRunning() {
 		ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-	//	Toast.makeText(BidirectionalAndroidUDPClientActivity.this, "is my service running ??", Toast.LENGTH_SHORT).show(); // debug
+	//	Toast.makeText(AndroidTCPClientActivity.this, "is my service running ??", Toast.LENGTH_SHORT).show(); // debug
 		for (RunningServiceInfo service : manager
 				.getRunningServices(Integer.MAX_VALUE)) {
-			Toast.makeText(BidirectionalAndroidUDPClientActivity.this, "name of service " + service.service.getClassName(), Toast.LENGTH_LONG);
+			Toast.makeText(AndroidTCPClientActivity.this, "name of service " + service.service.getClassName(), Toast.LENGTH_LONG);
 			 Log.i("myservice is running",service.service.getClassName());
-			if ("com.lauridmeyer.tests.MyService".equals(service.service.getClassName())){
-				Toast.makeText(BidirectionalAndroidUDPClientActivity.this, "YES the service is running", Toast.LENGTH_SHORT).show(); // debug
+			if ("com.maelr.tcp_phone_door.MyService".equals(service.service.getClassName())){
+				Toast.makeText(AndroidTCPClientActivity.this, "YES the service is running", Toast.LENGTH_SHORT).show(); // debug
 				return true;
 			}
 			
 		}
-		Toast.makeText(BidirectionalAndroidUDPClientActivity.this, "CHECK IF the service is running irhgi^rzîhgni^zrhengi^znrîhngir^nhgrngoirnbgoiznboinhir^ngîrnogr", Toast.LENGTH_LONG).show();
+		Toast.makeText(AndroidTCPClientActivity.this, "CHECK IF the service is running irhgi^rzîhgni^zrhengi^znrîhngir^nhgrngoirnbgoiznboinhir^ngîrnogr", Toast.LENGTH_LONG).show();
 		return false;
 	}
 
@@ -112,7 +113,7 @@ public class BidirectionalAndroidUDPClientActivity extends Activity {
 //			Toast.makeText(ServiceDemoActivity.this, "CHECK IF the service is running irhgi^rzîhgni^zrhengi^znrîhngir^nhgrngoirnbgoiznboinhir^ngîrnogr", Toast.LENGTH_LONG);
 			return true;
 		}
-		Toast.makeText(BidirectionalAndroidUDPClientActivity.this, "CLULU", Toast.LENGTH_LONG).show();
+		Toast.makeText(AndroidTCPClientActivity.this, "CLULU", Toast.LENGTH_LONG).show();
 		return false;
 		
 	}
