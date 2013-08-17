@@ -1,0 +1,22 @@
+﻿
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	modified:   AndroidManifest.xml
+#	new file:   TCP_Phone_Door
+#	renamed:    gen/com/maelreymond/phone_door/BuildConfig.java -> gen/com/maelr/tcp_phone_door/BuildConfig.java
+#	renamed:    gen/com/maelreymond/phone_door/R.java -> gen/com/maelr/tcp_phone_door/R.java
+#	new file:   lint.xml
+#	renamed:    _20130312_arduino_phone_door/phonedoorv1_0/phonedoorv1_0.ino -> phonedoorTCPv1_0/phonedoorTCPv1_0.ino
+#	modified:   res/values/strings.xml
+#	renamed:    src/com/maelreymond/phone_door/BidirectionalAndroidUDPClientActivity.java -> src/com/maelr/tcp_phone_door/AndroidTCPClientActivity.java
+#	renamed:    src/com/maelreymond/phone_door/ManageKeyguard.java -> src/com/maelr/tcp_phone_door/ManageKeyguard.java
+#	renamed:    src/com/maelreymond/phone_door/ManageWakeLock.java -> src/com/maelr/tcp_phone_door/ManageWakeLock.java
+#	new file:   src/com/maelr/tcp_phone_door/MyService.java
+#	renamed:    src/com/maelreymond/phone_door/ServerSocketExample.java -> src/com/maelr/tcp_phone_door/ServerSocketExample.java
+#	deleted:    src/com/maelreymond/phone_door/MyService.java
+#
+
